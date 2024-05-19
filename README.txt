@@ -9,4 +9,5 @@ $ cd frontend && npm run dev
 
 roadmap:
 - add human readable ID for collections
-- add printable label 
+- add printable label
+- add multiple authors/contributors (like keywords/locations)
