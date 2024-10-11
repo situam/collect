@@ -1,42 +1,46 @@
 /// <reference path="../pb_data/types.d.ts" />
 migrate((db) => {
   const dao = new Dao(db)
-  const collection = dao.findCollectionByNameOrId("w6xv6cfwyt2ius5")
+  const collection = dao.findCollectionByNameOrId("uvl5a55vlag1cnw")
 
   // update
   collection.schema.addField(new SchemaField({
     "system": false,
-    "id": "ygosgpxe",
-    "name": "location",
-    "type": "text",
-    "required": false,
+    "id": "lododaha",
+    "name": "file",
+    "type": "file",
+    "required": true,
     "presentable": false,
     "unique": false,
     "options": {
-      "min": null,
-      "max": null,
-      "pattern": ""
+      "mimeTypes": [],
+      "thumbs": [],
+      "maxSelect": 1,
+      "maxSize": 10000000000,
+      "protected": false
     }
   }))
 
   return dao.saveCollection(collection)
 }, (db) => {
   const dao = new Dao(db)
-  const collection = dao.findCollectionByNameOrId("w6xv6cfwyt2ius5")
+  const collection = dao.findCollectionByNameOrId("uvl5a55vlag1cnw")
 
   // update
   collection.schema.addField(new SchemaField({
     "system": false,
-    "id": "ygosgpxe",
-    "name": "location",
-    "type": "text",
+    "id": "lododaha",
+    "name": "file",
+    "type": "file",
     "required": true,
     "presentable": false,
     "unique": false,
     "options": {
-      "min": null,
-      "max": null,
-      "pattern": ""
+      "mimeTypes": [],
+      "thumbs": [],
+      "maxSelect": 1,
+      "maxSize": 1000000000,
+      "protected": false
     }
   }))
 

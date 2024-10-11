@@ -6,16 +6,16 @@ migrate((db) => {
   // add
   collection.schema.addField(new SchemaField({
     "system": false,
-    "id": "zznncemt",
-    "name": "notes",
-    "type": "text",
+    "id": "nussnp50",
+    "name": "entry_id",
+    "type": "number",
     "required": false,
     "presentable": false,
     "unique": false,
     "options": {
       "min": null,
       "max": null,
-      "pattern": ""
+      "noDecimal": true
     }
   }))
 
@@ -25,7 +25,7 @@ migrate((db) => {
   const collection = dao.findCollectionByNameOrId("w6xv6cfwyt2ius5")
 
   // remove
-  collection.schema.removeField("zznncemt")
+  collection.schema.removeField("nussnp50")
 
   return dao.saveCollection(collection)
 })
