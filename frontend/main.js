@@ -1,17 +1,19 @@
-import Tagify from '@yaireo/tagify'
-import '@yaireo/tagify/dist/tagify.css'
+import Tagify from "@yaireo/tagify";
+import "@yaireo/tagify/dist/tagify.css";
 
-import PocketBase from 'pocketbase'
+import PocketBase from "pocketbase";
 
-import Uppy from '@uppy/core';
-import Dashboard from '@uppy/dashboard';
+import Uppy from "@uppy/core";
+import Dashboard from "@uppy/dashboard";
 
-import '@uppy/core/dist/style.min.css';
-import '@uppy/dashboard/dist/style.min.css';
+import "@uppy/core/dist/style.min.css";
+import "@uppy/dashboard/dist/style.min.css";
 
-const uppy = new Uppy().use(Dashboard, { inline: true, target: '#uppy-dashboard',
+const uppy = new Uppy().use(Dashboard, {
+  inline: true,
+  target: "#uppy-dashboard",
 
-/*
+  /*
 metaFields: [
   { id: 'name', name: 'Name', placeholder: 'file name' },
   { id: 'tags', name: 'Keywords', placeholder: 'specify extra keywords (comma separated)' },
@@ -33,165 +35,136 @@ metaFields: [
   },
 ],
 */
-
 });
-window.uppy = uppy
+window.uppy = uppy;
 
-const pb = new PocketBase('http://127.0.0.1:8090')
+const pb = new PocketBase("http://127.0.0.1:8090");
 pb.autoCancellation(false);
 
-const fileInput = document.querySelector('input#files')
-
-// https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
-const imageFileTypes = [
-  "image/apng",
-  "image/bmp",
-  "image/gif",
-  "image/jpeg",
-  "image/pjpeg",
-  "image/png",
-  "image/svg+xml",
-  "image/tiff",
-  "image/webp",
-  "image/x-icon",
-];
-
-function fileIsImage(file) {
-  return fileTypes.includes(file.type);
-}
-
-function FilePreview(file) {
-  if (file.type.includes('image')) {
-    return `<img src="${URL.createObjectURL(file)}"/>`
-  }
-
-  if (file.type.includes('video')) {
-    return `<video><source src="${URL.createObjectURL(file)}"></video>`
-  }
-  
-  return ''
-}
-
-/*
-fileInput.addEventListener('change', ()=>{
-  const preview = document.querySelector("#filesPreview")
-  while (preview.firstChild) {
-    preview.removeChild(preview.firstChild);
-  }
-  const curFiles = fileInput.files;
-  let h = `<table>`
-
-  for (const file of curFiles) {  
-    h +=`<tr>
-      <td>${FilePreview(file)}</td>
-      <td>${file.name}</td>
-      <!--<td>(tags)</td>-->
-    </tr>`
-  }
-
-  h +=`</table>`
-  preview.innerHTML = h
-})
+/**
+Setup Tagify given a collection name and document element
 */
+async function initTagField(collectionName, documentElement) {
+  const tagRecords = await pb.collection(collectionName).getFullList();
+  let tagList = tagRecords.map((rec) => ({
+    value: rec.display_name,
+    name: rec.id,
+  }));
+  const tags = new Tagify(documentElement, {
+    whitelist: tagList,
+    maxTags: 10,
+    dropdown: {
+      maxItems: 20, // <- mixumum allowed rendered suggestions
+      classname: "tags-look", // <- custom classname for this dropdown, so it could be targeted
+      enabled: 0, // <- show suggestions on focus
+      closeOnSelect: false, // <- do not hide the suggestions dropdown once an item has been selected
+    },
+  });
+}
 
-const tagRecords = await pb.collection('tags').getFullList()
-let tagList = tagRecords.map(rec=>({
-  value: rec.tag,
-  name: rec.id
-}))
-const tags = new Tagify(document.querySelector('input#tags'), {
-  whitelist: tagList,
-  maxTags: 10,
-  dropdown: {
-    maxItems: 20,           // <- mixumum allowed rendered suggestions
-    classname: 'tags-look', // <- custom classname for this dropdown, so it could be targeted
-    enabled: 0,             // <- show suggestions on focus
-    closeOnSelect: false    // <- do not hide the suggestions dropdown once an item has been selected
+await initTagField("tags", document.querySelector("input#tags"));
+await initTagField("locations", document.querySelector("input#location"));
+await initTagField(
+  "contributors",
+  document.querySelector("input#contributors"),
+);
+await initTagField("authors", document.querySelector("input#authors"));
+
+/**
+Given a list of tags (name, value),
+get the record ids, creating records if they dont exist
+
+@param {string} collectionName
+@param {TagifyValue} tagifyValue
+@returns {Future<string[]>} recordIds
+*/
+async function getTagRecordIds(collectionName, tagifyValue) {
+  if (!tagifyValue) {
+    // empty
+    return [];
   }
-})
 
-const locationRecords = await pb.collection('locations').getFullList()
-let locationList = locationRecords.map(rec=>({
-  value: rec.location,
-  name: rec.id
-}))
-const locations = new Tagify(document.querySelector('input#location'), {
-  whitelist: locationList,
-  maxTags: 10,
-  dropdown: {
-    maxItems: 20,           // <- mixumum allowed rendered suggestions
-    classname: 'tags-look', // <- custom classname for this dropdown, so it could be targeted
-    enabled: 0,             // <- show suggestions on focus
-    closeOnSelect: false    // <- do not hide the suggestions dropdown once an item has been selected
-  }
-})
+  let ids = [];
+  await Promise.all(
+    JSON.parse(tagifyValue).map(async (tag) => {
+      if (!tag.name) {
+        // new tag, need to create
+        const record = await pb.collection(collectionName).create({
+          display_name: tag.value,
+        }); // TODO: handle error creating in case record already exists
+        ids = [...ids, record.id];
+      } else {
+        ids = [...ids, tag.name];
+      }
+    }),
+  );
+  return ids;
+}
 
-const form = document.querySelector('form');
+const form = document.querySelector("form");
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  if (document.querySelector('input#tags').tagifyValue==='' || JSON.parse(document.querySelector('input#tags').tagifyValue).length < 3) {
+  // validate at least 3 tags
+  if (
+    document.querySelector("input#tags").tagifyValue === "" ||
+    JSON.parse(document.querySelector("input#tags").tagifyValue).length < 3
+  ) {
     // tags empty
-    alert("please select at least 3 tags")
-    return
+    alert("please select at least 3 tags");
+    return;
   }
 
-  // create/get tag records 
-  let tagRecordIds = []
-  await Promise.all(JSON.parse(document.querySelector('input#tags').tagifyValue).map(async tag=>{
-    if (!tag.name) {
-      console.log("make new tag: ", tag.value)
-      // new tag, need to create
-      const record = await pb.collection('tags').create({
-        'tag': tag.value
-      });
-      tagRecordIds = [...tagRecordIds, record.id]
-    } else {
-      tagRecordIds = [...tagRecordIds, tag.name]
-    }
-  }))
-  //console.log("tagRecordIds", tagRecordIds)
+  // validate at least 1 contributor
+  if (document.querySelector("input#contributors").tagifyValue === "") {
+    alert("please enter at least one contributor");
+    return;
+  }
 
-  // create/get location records
-  let locationRecordIds = []
-  await Promise.all(JSON.parse(document.querySelector('input#location').tagifyValue).map(async tag=>{
-    if (!tag.name) {
-      console.log("make new location: ", tag.value)
-      // new tag, need to create
-      const record = await pb.collection('locations').create({
-        'location': tag.value
-      });
-      locationRecordIds = [...locationRecordIds, record.id]
-    } else {
-      locationRecordIds = [...locationRecordIds, tag.name]
-    }
-  }))
-  console.log("locationRecordIds", locationRecordIds)
-  
+  const tagRecordIds = await getTagRecordIds(
+    "tags",
+    document.querySelector("input#tags").tagifyValue,
+  );
+  const locationRecordIds = await getTagRecordIds(
+    "locations",
+    document.querySelector("input#location").tagifyValue,
+  );
+  const authorRecordIds = await getTagRecordIds(
+    "authors",
+    document.querySelector("input#authors").tagifyValue,
+  );
+  const contributorRecordIds = await getTagRecordIds(
+    "contributors",
+    document.querySelector("input#contributors").tagifyValue,
+  );
+
   // upload files, get file records
-  let fileRecordIds = []
-  let files = uppy.getFiles().map(uppyFile=>uppyFile.data)
+  let fileRecordIds = [];
+  let files = uppy.getFiles().map((uppyFile) => uppyFile.data);
   for (const file of files) {
-  //for (const file of fileInput.files) {
-    let formData = new FormData()
-    formData.append('file', file)
-    const createdRecord = await pb.collection('files').create(formData);
-    fileRecordIds = [...fileRecordIds, createdRecord.id]
+    //for (const file of fileInput.files) {
+    let formData = new FormData();
+    formData.append("file", file);
+    const createdRecord = await pb.collection("files").create(formData);
+    fileRecordIds = [...fileRecordIds, createdRecord.id];
   }
-  console.log("fileRecordIds",fileRecordIds)
+  console.log("fileRecordIds", fileRecordIds);
 
   // add contribution
-  await pb.collection('contributions').create({
-    'description': document.querySelector("input#description").value,
-    'contributor_name': document.querySelector("input#contributor_name").value,
-    'tags': tagRecordIds,
-    'location': locationRecordIds,
-    'author': document.querySelector("input#author").value,
-    'physical': document.querySelector("input#physical").checked,
-    'date_created': document.querySelector("input#date_created").value,
-    'files': fileRecordIds
+  const record = await pb.collection("contributions").create({
+    description: document.querySelector("input#description").value,
+    authors: authorRecordIds,
+    contributors: contributorRecordIds,
+    tags: tagRecordIds,
+    location: locationRecordIds,
+    //contributor_name: document.querySelector("input#contributor_name").value,
+    //author: document.querySelector("input#author").value,
+    physical: document.querySelector("input#physical").checked,
+    date_created: document.querySelector("input#date_created").value,
+    files: fileRecordIds,
   });
 
-  alert("Submission saved to collection.")
-  window.location.reload()
+  console.log("Saved contribution", record);
+  alert("Submission saved to collection.");
+  //window.location.reload();
 });

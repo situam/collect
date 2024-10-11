@@ -24,7 +24,7 @@ form > div {
   align-items: flex-start;
   flex-direction: column;
 }
-input { 
+input {
   width: 100%;
 }
 img, video {
@@ -40,15 +40,7 @@ img, video {
   <body>
     <form action="" method="get">
       <div id="uppy-dashboard"></div>
-      <!--
-        <div>
-        <label for="files">choose file(s) for collection:</label>
-        <input type="file" id="files" name="files" multiple required/>
-      </div>
-      <div id="filesPreview">
-        -->
 
-      </div>
       <div>
         <label for="description">collection description </label>
         <input type="text" name="description" id="description" required/>
@@ -62,12 +54,12 @@ img, video {
         <input type="text" name="location" id="location"/>
       </div>
       <div>
-        <label for="contributor_name">contributor</label>
-        <input type="text" name="contributor_name" id="contributor_name" required/>
+        <label for="contributors">contributors (at least 1)</label>
+        <input type="text" name="contributors" id="contributors"/>
       </div>
       <div>
-        <label for="author">author</label>
-        <input type="text" name="author" id="author" />
+        <label for="authors">authors</label>
+        <input type="text" name="authors" id="authors"/>
       </div>
       <div>
         <label for="date_created">date created</label>
@@ -85,6 +77,6 @@ img, video {
         <input type="submit" value="Submit" />
       </div>
     </form>
-    <script type="module" src="/main.js"></script>  
-  </body>    
+    <script type="module" src="/main.js"></script>
+  </body>
 </html>
