@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title data-i18n="recollector.title">Re&ndash;collect</title>
+        <style>
+            html,
+            body {
+                margin: 1em;
+                background: #f3f8f3;
+                font-size: 20px;
+            }
+            form {
+                width: 25em;
+            }
+            form > div {
+                margin-bottom: 1em;
+                display: flex;
+                align-items: flex-start;
+                flex-direction: column;
+            }
+            input {
+                width: 100%;
+            }
+            img,
+            video {
+                width: 100%;
+            }
+            table,
+            tr,
+            th,
+            td {
+                border: 1px solid #ddd;
+            }
+
+            .contributions-list {
+                display: flex;
+                flex-direction: column;
+                gap: 1em;
+            }
+            .contribution {
+                border: 1px solid black;
+                padding: 1em;
+            }
+            .preview-image-grid {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5em;
+            }
+
+            /* Style for the back-to-top button */
+            #back-to-top {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                display: none; /* Initially hidden */
+                background-color: #333;
+                color: white;
+                text-align: center;
+                padding: 10px 15px;
+                border-radius: 50%;
+                font-size: 24px;
+                cursor: pointer;
+                z-index: 1000; /* Ensure it stays on top */
+                text-decoration: none;
+            }
+
+            #back-to-top:hover {
+                background-color: #555; /* Darker on hover */
+            }
+        </style>
+    </head>
+    <body>
+        <h1 data-i18n="recollector.title">Re&ndash;collect</h1>
+        <form action="" method="get">
+            <p data-i18n="recollector.subtitle">
+                Use the fields below to filter the Co&ndash;llection
+            </p>
+            <div>
+                <label
+                    for="title_description"
+                    data-i18n="recollector.formFieldSearch"
+                    >title/description</label
+                >
+                <input
+                    type="text"
+                    name="title_description"
+                    id="title_description"
+                    placeholder="try searching in title/description"
+                    data-i18n-placeholder="recollector.formFieldSearchHint"
+                />
+            </div>
+            <div>
+                <label for="tags" data-i18n="collector.formKeywords"
+                    >collection keywords</label
+                >
+                <input
+                    type="text"
+                    name="tags"
+                    id="tags"
+                    placeholder="try choosing from the list"
+                    data-i18n-placeholder="recollector.formFieldTagHint"
+                />
+            </div>
+            <div>
+                <label for="location" data-i18n="collector.formLocation"
+                    >location</label
+                >
+                <input
+                    type="text"
+                    name="location"
+                    id="location"
+                    placeholder="try choosing from the list"
+                    data-i18n-placeholder="recollector.formFieldTagHint"
+                />
+            </div>
+            <div>
+                <label for="contributors" data-i18n="collector.formContributors"
+                    >contributors</label
+                >
+                <input
+                    type="text"
+                    name="contributors"
+                    id="contributors"
+                    placeholder="try choosing from the list"
+                    data-i18n-placeholder="recollector.formFieldTagHint"
+                />
+            </div>
+            <div>
+                <label for="authors" data-i18n="collector.formAuthors"
+                    >authors</label
+                >
+                <input
+                    type="text"
+                    name="authors"
+                    id="authors"
+                    placeholder="try choosing from the list"
+                    data-i18n-placeholder="recollector.formFieldTagHint"
+                />
+            </div>
+            <!--<div>
+                <label for="date_created">date created</label>
+                <input type="date" name="date_created" id="date_created" />
+                </div>
+            <div>
+                <label for="physical">in physical collection</label>
+                <input type="checkbox" name="physical" id="physical" />
+                </div>-->
+            <div>
+                <input
+                    type="submit"
+                    value="Search"
+                    data-i18n-value="recollector.formSubmit"
+                />
+            </div>
+        </form>
+        <div id="contributions"></div>
+        <a href="#" id="back-to-top" title="Go to top">&#8679;</a>
+        <script type="module" src="/recollect.js"></script>
+    </body>
+</html>

@@ -15,6 +15,7 @@
     "@uppy/core": "^3.11.3",
     "@uppy/dashboard": "^3.8.3",
     "@yaireo/tagify": "^4.26.4",
+    "i18next": "^23.16.0",
     "pocketbase": "^0.21.2"
   }
 }

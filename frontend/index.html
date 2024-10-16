@@ -1,82 +1,180 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>collect</title>
-      <style>
-html, body {
-  margin: 0;
-  background: #f8f3f3;
-  font-size: 20px;
-}
-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-form {
-  width: 20em;
-}
-form > div {
-  margin-bottom: 1em;
-  display: flex;
-  align-items: flex-start;
-  flex-direction: column;
-}
-input {
-  width: 100%;
-}
-img, video {
-  width: 100%;
-}
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title data-i18n="collector.title">Co&ndash;llect</title>
+        <style>
+            html,
+            body {
+                margin: 1em;
+                background: #f8f3f3;
+                font-size: 20px;
+            }
+            /*body {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }*/
+            form {
+                width: 25em;
+            }
+            form > div {
+                margin-bottom: 1em;
+                display: flex;
+                align-items: flex-start;
+                flex-direction: column;
+            }
+            input {
+                width: 100%;
+            }
+            img,
+            video {
+                width: 100%;
+            }
 
-/* hide upload button */
-.uppy-size--md .uppy-StatusBar.is-waiting .uppy-StatusBar-actionBtn--upload {
-  display: none;
-}
-    </style>
-  </head>
-  <body>
-    <form action="" method="get">
-      <div id="uppy-dashboard"></div>
+            /* hide upload button */
+            .uppy-size--md
+                .uppy-StatusBar.is-waiting
+                .uppy-StatusBar-actionBtn--upload {
+                display: none;
+            }
+            uppy-Dashboard-Item-action--edit {
+                width: 30px;
+                height: 30px;
+                background: green;
 
-      <div>
-        <label for="description">collection description </label>
-        <input type="text" name="description" id="description" required/>
-      </div>
-      <div>
-        <label for="tags">collection keywords (at least 3)</label>
-        <input type="text" name="tags" id="tags"/>
-      </div>
-      <div>
-        <label for="location">location </label>
-        <input type="text" name="location" id="location"/>
-      </div>
-      <div>
-        <label for="contributors">contributors (at least 1)</label>
-        <input type="text" name="contributors" id="contributors"/>
-      </div>
-      <div>
-        <label for="authors">authors</label>
-        <input type="text" name="authors" id="authors"/>
-      </div>
-      <div>
-        <label for="date_created">date created</label>
-        <input type="date" name="date_created" id="date_created"  />
-      </div>
-      <div>
-        <label for="physical">in physical collection</label>
-        <input type="checkbox" name="physical" id="physical"/>
-      </div>
-      <div>
-        <label for="acceptTerms">i accept the <a href="/terms.txt" target="_blank">terms</a></label>
-        <input type="checkbox" name="acceptTerms" id="acceptTerms" required/>
-      </div>
-      <div>
-        <input type="submit" value="Submit" />
-      </div>
-    </form>
-    <script type="module" src="/main.js"></script>
-  </body>
+                /*    position: relative; */
+            }
+            .uppy-Dashboard-Item-action--edit::after {
+                content: "+caption"; /* Text to display */
+                color: black; /* Adjust text color */
+                font-size: 0.8em; /* Adjust text size */
+                background: #0f0;
+                padding: 0.1em;
+                border: 1px solid black;
+                /*position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%); */
+                white-space: nowrap; /* Prevent the text from wrapping */
+            }
+        </style>
+    </head>
+    <body>
+        <h1 data-i18n="collector.title">Co&ndash;llect</h1>
+        <form action="" method="get">
+            <p data-i18n="collector.subtitle">
+                Add to the Co&ndash;llection using the fields below
+            </p>
+            <div id="uppy-dashboard"></div>
+
+            <div>
+                <label
+                    for="description"
+                    data-i18n="collector.formTitle"
+                    data-required
+                    >title<span style="color: red">*</span></label
+                >
+                <input
+                    type="text"
+                    name="description"
+                    id="description"
+                    required
+                />
+            </div>
+            <div>
+                <label
+                    for="long_description"
+                    data-i18n="collector.formDescription"
+                    >description
+                </label>
+                <textarea
+                    id="long_description"
+                    name="long_description"
+                    rows="5"
+                    cols="33"
+                ></textarea>
+            </div>
+            <div>
+                <label
+                    for="tags"
+                    data-i18n="collector.formKeywords"
+                    data-required
+                    >collection keywords<span style="color: red">*</span></label
+                >
+                <input
+                    type="text"
+                    name="tags"
+                    id="tags"
+                    data-i18n-placeholder="collector.formKeywordsHint"
+                    placeholder="Choose/create at least 3 keywords"
+                />
+            </div>
+            <div>
+                <label for="location" data-i18n="collector.formLocation"
+                    >location
+                </label>
+                <input type="text" name="location" id="location" />
+            </div>
+            <div>
+                <label
+                    for="contributors"
+                    data-i18n="collector.formContributors"
+                    data-required
+                    >contributors</label
+                >
+                <input
+                    type="text"
+                    name="contributors"
+                    id="contributors"
+                    placeholder="Choose/create at least 1 contributor"
+                    data-i18n-placeholder="collector.formContributorsHint"
+                />
+            </div>
+            <div>
+                <label for="authors" data-i18n="collector.formAuthors"
+                    >authors</label
+                >
+                <input type="text" name="authors" id="authors" />
+            </div>
+            <div>
+                <label for="date_created" data-i18n="collector.formDateCreated"
+                    >date created</label
+                >
+                <input type="date" name="date_created" id="date_created" />
+            </div>
+            <div>
+                <label
+                    for="physical"
+                    data-i18n="collector.formInPhysicalCollection"
+                    >in physical collection</label
+                >
+                <input type="checkbox" name="physical" id="physical" />
+            </div>
+            <div>
+                <label
+                    for="acceptTerms"
+                    data-i18n="collector.formAcceptTerms"
+                    data-required
+                    >i accept the <a href="/terms.txt" target="_blank">terms</a
+                    ><span style="color: red">*</span></label
+                >
+                <input
+                    type="checkbox"
+                    name="acceptTerms"
+                    id="acceptTerms"
+                    required
+                />
+            </div>
+            <div>
+                <input
+                    type="submit"
+                    value="Submit"
+                    data-i18n-value="collector.formSubmit"
+                />
+            </div>
+        </form>
+        <script type="module" src="/collect.js"></script>
+    </body>
 </html>

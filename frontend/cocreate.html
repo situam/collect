@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title data-i18n="cocreate.title">Co&ndash;create</title>
+        <style>
+            html,
+            body {
+                margin: 1em;
+                background: #f3f3f8;
+                font-size: 20px;
+                height: 80vh;
+            }
+        </style>
+    </head>
+    <body>
+        <h1 data-i18n="cocreate.title">Co&ndash;create</h1>
+        <iframe
+            width="100%"
+            height="100%"
+            src="http://localhost:5174/agora/welcome"
+            style="border: none"
+        ></iframe>
+        <script type="module">
+            import { hydrateText } from "./src/i18n";
+            hydrateText();
+        </script>
+    </body>
+</html>
