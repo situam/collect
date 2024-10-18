@@ -68,6 +68,7 @@ const uppy = new Uppy().use(Dashboard, {
 });
 window.uppy = uppy;
 hydrateText();
+updateUppyCssContent();
 
 await initTagField("tags", document.querySelector("input#tags"));
 await initTagField("locations", document.querySelector("input#location"));

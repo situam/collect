@@ -147,6 +147,10 @@ function getLocaleFromUrl() {
   return locale || "en"; // Default to 'en' if no locale is found
 }
 
+function getLocaleParam() {
+  return `locale=${getLocaleFromUrl()}`;
+}
+
 function hydrateText() {
   // Update innerHTML for elements with data-i18n
   document.querySelectorAll("[data-i18n]").forEach(function (element) {
@@ -182,4 +186,4 @@ function addRequiredAsterisk() {
     }
   });
 }
-export { i18next, getLocaleFromUrl, hydrateText };
+export { i18next, getLocaleParam, getLocaleFromUrl, hydrateText };

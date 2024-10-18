@@ -3,7 +3,12 @@ import "@yaireo/tagify/dist/tagify.css";
 import { initTagField, getTagRecordIds } from "./tagify";
 import { pb } from "./database";
 
-import { getLocaleFromUrl, hydrateText, i18next } from "./src/i18n";
+import {
+  getLocaleParam,
+  getLocaleFromUrl,
+  hydrateText,
+  i18next,
+} from "./src/i18n";
 
 hydrateText();
 
@@ -139,6 +144,12 @@ function limitTextDisplay(text, maxLength = 200) {
 }
 
 function hydrateContributionList(documentElement, contributions) {
+  const getLinkToContribution = (contributionId) =>
+    `recollect_single.html?contribution=${contributionId}&embed=true&${getLocaleParam()}`;
+
+  const getLinkToFile = (fileId) =>
+    `recollect_single.html?file=${fileId}&embed=true&${getLocaleParam()}`;
+
   documentElement.innerHTML = `<div class="contributions-list">
     ${contributions
       .map(
@@ -152,7 +163,9 @@ function hydrateContributionList(documentElement, contributions) {
               (el) => `
               ${
                 el.thumb
-                  ? `<a href="${pb.files.getUrl(el, el.processed_file)}"><img src="${pb.files.getUrl(el, el.thumb)}" title="FILE#${el.entry_id}"></img></a>`
+                  ? `<a href="#" onclick="openInIframe('${getLinkToFile(el.entry_id)}', 'CO#${el.entry_id}'); return false;">
+                      <img src="${pb.files.getUrl(el, el.thumb)}" title="FILE#${el.entry_id}"></img>
+                    </a>`
                   : "⏳"
               }`,
             )
@@ -160,7 +173,9 @@ function hydrateContributionList(documentElement, contributions) {
         </div>
 
         <p>${limitTextDisplay(rec.long_description)}</p>
-        <a href="recollect_single.html?contribution=${rec.entry_id}" target="_blank" title="Open contribution CO#${rec.entry_id}">${i18next.t("recollector.linkMore")}</a>
+        <a href="#" onclick="openInIframe('${getLinkToContribution(rec.entry_id)}', 'CO#${rec.entry_id}'); return false;" title="Open contribution CO#${rec.entry_id}">
+          ${i18next.t("recollector.linkMore")}
+        </a>
       </div>
       `,
       )

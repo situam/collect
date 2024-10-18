@@ -1,6 +1,6 @@
 import { pb } from "./database";
 
-import { i18next } from "./src/i18n";
+import { i18next, getLocaleParam } from "./src/i18n";
 
 function hydrateContributionDisplay(documentElement, rec) {
   documentElement.innerHTML = `
@@ -10,7 +10,7 @@ function hydrateContributionDisplay(documentElement, rec) {
       ${rec.expand?.files
         ?.map(
           (el) => `
-        <a href="${pb.files.getUrl(el, el.processed_file)}"><img src="${pb.files.getUrl(el, el.thumb)}"></img></a>
+        <a href="recollect_single.html?file=${el.entry_id}&embed=true&${getLocaleParam()}"><img src="${pb.files.getUrl(el, el.thumb)}"></img></a>
          ${el.processed_file.split(".")?.pop()}
         `,
         )
@@ -62,10 +62,42 @@ async function getContributionData(entryId) {
   return record;
 }
 
+function renderFileByType(url) {
+  const fileType = url.split(".").pop().toLowerCase(); // Get the file extension
+
+  switch (fileType) {
+    case "jpg":
+    case "jpeg":
+    case "png":
+    case "gif":
+      return `<img src="${url}" alt="Image file" />`;
+
+    case "mp4":
+      return `
+        <video controls>
+          <source src="${url}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>`;
+
+    case "mp3":
+      return `
+        <audio controls>
+          <source src="${url}" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>`;
+
+    case "pdf":
+      return `<embed src="${url}" type="application/pdf" width="100%" height="600px" />`;
+
+    default:
+      return "<pre>Unsupported file type</pre>";
+  }
+}
+
 function hydrateFileDisplay(documentElement, rec) {
   documentElement.innerHTML = `
     <pre>FILE#${rec.entry_id}</pre>
-    <a href="${pb.files.getUrl(rec, rec.processed_file)}"><img src="${pb.files.getUrl(rec, rec.thumb)}"></img></a>
+    ${renderFileByType(pb.files.getUrl(rec, rec.processed_file))}
     <p>${rec.caption}</p>
   `;
 }
@@ -123,7 +155,7 @@ async function init() {
 
     if (fileId) {
       stylesheet.innerHTML += `
-        img {
+        img,video {
          width: 100%;
         }
       `;

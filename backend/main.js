@@ -79,7 +79,17 @@ async function processFiles(records) {
               thumbCmd: (inputFilePath, outputFilePath) =>
                 `ffmpeg -y -i ${inputFilePath} -ss 00:00:01.000 -vframes 1 -vf "scale=150:150:force_original_aspect_ratio=decrease, pad=ceil(iw/2)*2:ceil(ih/2)*2" ${outputFilePath}`,
             });
-          } else if (contentType === "application/pdf") {
+          }
+          else if (contentType.startsWith("audio/")) {
+            await processFile(filePath, record, {
+              processedExt: ".mp3",
+              processCmd: (inputFilePath, outputFilePath) =>
+                `ffmpeg -y -i ${inputFilePath} -acodec libmp3lame -b:a 128k ${outputFilePath}`,
+              thumbCmd: (inputFilePath, outputFilePath) =>
+                `ffmpeg -y -i ${inputFilePath} -filter_complex "showwavespic=s=150x150" -frames:v 1 ${outputFilePath}`,
+            });
+          }
+          else if (contentType === "application/pdf") {
             await processFile(filePath, record, {
               processedExt: ".pdf",
               processCmd: (inputFilePath, outputFilePath) =>
