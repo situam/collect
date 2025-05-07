@@ -1,6 +1,6 @@
-# collect
+# co-llection
 
-beginnings of collection
+Source repository for the digital co-llection interface.
 
 ## installation
 
@@ -11,16 +11,50 @@ beginnings of collection
 
 ## usage
 
-$ cd database && ./pocketbase serve
-$ cd backend && node main.js
-$ cd frontend && npm run dev
+$ sh start_collector.sh
+
+## autostart
+
+```
+sudo cp co-llection.service /etc/systemd/system/co-llection.service
+sudo systemctl daemon-reload
+sudo systemctl enable co-llection.service
+sudo systemctl start co-llection.service
+```
 
 ## roadmap
+
+### April 2025:
+
+[ ] publish the publication
+    [ ] add publication viewing mode:
+        - default unlocked
+        - nothing selectable
+        - no adding/uploading
+    [ ] add option to disable "out of site destroyed" so that sound files play
+
+[X] Scripts to run on start
+  [ ] Document setup:
+    - add collection.service to git
+    - add readme to indicate how to do this (see devlog.txt)
+[ ] Run on local network
+[ ] Backup strategy
+
+(hopefully)
+[ ] make some more spaces for co-creator
+[ ] brainstorm space management system
+    [ ] think about access control (i.e. start with online as view-only)
+[ ] brainstorm online version
+
+
+### Backlog:
 
 [X] add human readable ID for collections
   [X] for each entry CO#1, CO#2...
   [ ] QR code / printable label
-[ ] Update contribution data model: add date created range (maybe just end date)
+[ ] Update contribution data model:
+    [ ] add date created range (maybe just end date)
+    [ ] change location tags to points on a map
 [X] Full text search of the title/description
 [ ] Text search: all fields?
 [ ] Consider implementing inPhysicalCollection internally as just adding the "physical" tag.
@@ -28,15 +62,15 @@ $ cd frontend && npm run dev
 Recollection:
 [ ] Pagination / lazy load when scrolling
 [ ] Single view of single file
-[ ] Design the signle views with embedding in mind (e.g. for co-creator)
+[ ] Design the single views with embedding in mind (e.g. for co-creator)
 
 Processing pipeline:
 [X] Check if loop is working
-[ ] Split into two running in parrallel: one handling video, one handling th erest
+[ ] Split into two running in parallel: one handling video, one handling the rest
 
 Deployment:
 [ ] Password-protect repo ?
-[ ] Scripts to run on start ?
+
 [ ] SSH tunnel for remote support
 
 UI:
@@ -59,7 +93,7 @@ References:
 Collection:
 - heading
 - introduction text
-- visual indicitation of where to upload files
+- visual indication of where to upload files
 - prompts for each field
 
 Re-collection:
